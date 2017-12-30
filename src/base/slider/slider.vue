@@ -71,6 +71,9 @@
         }
         this.$refs.sliderGroup.style.width = width + 'px'
       },
+      _initDots() {
+        this.dots = new Array(this.children.length)
+      },
       _initSlider() {
         this.slider = new BScroll(this.$refs.slider, {
           scrollX: true,
@@ -79,7 +82,8 @@
           snap: true,
           snapLoop: this.loop,
           snapThreshold: 0.3,
-          snapSpeed: 400
+          snapSpeed: 400,
+          click: true
         })
 
         this.slider.on('scrollEnd', () => {
@@ -90,18 +94,10 @@
           this.currentPageIndex = pageIndex
 
           if (this.autoPlay) {
+            clearTimeout(this.timer)
             this._play()
           }
         })
-
-        this.slider.on('beforeScrollStart', () => {
-          if (this.autoPlay) {
-            clearTimeout(this.timer)
-          }
-        })
-      },
-      _initDots() {
-        this.dots = new Array(this.children.length)
       },
       _play() {
         let pageIndex = this.currentPageIndex + 1
