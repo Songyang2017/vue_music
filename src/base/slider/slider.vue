@@ -27,7 +27,7 @@
       },
       autoPlay: {
         type: Boolean,
-        dafault: true
+        default: true
       },
       interval: {
         type: Number,
