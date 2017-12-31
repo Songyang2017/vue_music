@@ -12,6 +12,7 @@ const express = require('express')
 const webpack = require('webpack')
 const proxyMiddleware = require('http-proxy-middleware')
 const webpackConfig = require('./webpack.dev.conf')
+const axios = require('axios')
 
 // default port where dev server listens for incoming traffic
 const port = process.env.PORT || config.dev.port
@@ -22,6 +23,26 @@ const autoOpenBrowser = !!config.dev.autoOpenBrowser
 const proxyTable = config.dev.proxyTable
 
 const app = express()
+
+var apiRoutes = express.Router()
+
+apiRoutes.get('/getDiscList', function (req, res) {
+  var url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
+  axios.get(url, {
+    headers: {
+      referer: 'https://c.y.qq.com/',
+      host: 'c.y.qq.com'
+    },
+    params: req.query
+  }).then((response) => {
+    res.json(response.data)
+}).catch((e) => {
+    console.log(e)
+})
+})
+
+app.use('/api', apiRoutes)
+
 const compiler = webpack(webpackConfig)
 
 const devMiddleware = require('webpack-dev-middleware')(compiler, {
@@ -51,7 +72,7 @@ app.use(hotMiddleware)
 Object.keys(proxyTable).forEach(function (context) {
   let options = proxyTable[context]
   if (typeof options === 'string') {
-    options = { target: options }
+    options = {target: options}
   }
   app.use(proxyMiddleware(options.filter || context, options))
 })
@@ -73,7 +94,8 @@ var _reject
 var readyPromise = new Promise((resolve, reject) => {
   _resolve = resolve
   _reject = reject
-})
+}
+)
 
 var server
 var portfinder = require('portfinder')
@@ -82,24 +104,24 @@ portfinder.basePort = port
 console.log('> Starting dev server...')
 devMiddleware.waitUntilValid(() => {
   portfinder.getPort((err, port) => {
-    if (err) {
-      _reject(err)
-    }
-    process.env.PORT = port
-    var uri = 'http://localhost:' + port
-    console.log('> Listening at ' + uri + '\n')
-    // when env is testing, don't need open it
-    if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-      opn(uri)
-    }
-    server = app.listen(port)
-    _resolve()
-  })
+  if(err) {
+    _reject(err)
+  }
+  process.env.PORT = port
+var uri = 'http://localhost:' + port
+console.log('> Listening at ' + uri + '\n')
+// when env is testing, don't need open it
+if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
+  opn(uri)
+}
+server = app.listen(port)
+_resolve()
+})
 })
 
 module.exports = {
   ready: readyPromise,
   close: () => {
-    server.close()
-  }
+  server.close()
+}
 }
