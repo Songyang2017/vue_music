@@ -24,6 +24,7 @@
           if (res.code === ERR_OK) {
             this.singers = res.data.list
             console.log(this._normallizeSinger(this.singers))
+//            console.log(res.data.list)
           }
         })
       },
@@ -37,7 +38,7 @@
         list.forEach((item, index) => {
           if (index < HOT_SINGER_LEN) {
             map.hot.items.push(new Singer({
-              id: item.Fsinger_id,
+              id: item.Fsinger_mid,
               name: item.Fsinger_name
             }))
           }
@@ -49,7 +50,7 @@
             }
           }
           map[key].items.push(new Singer({
-            id: item.Fsinger_id,
+            id: item.Fsinger_mid,
             name: item.Fsinger_name
           }))
         })
