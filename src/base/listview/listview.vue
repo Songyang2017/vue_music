@@ -1,7 +1,7 @@
 <template>
-  <scroll class="listview" :data="data">
+  <scroll class="listview" :data="data" ref="listview">
     <ul>
-      <li v-for="group in data" class="list-group">
+      <li v-for="group in data" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
           <li class="list-group-item" v-for="item in group.items">
@@ -11,9 +11,9 @@
         </ul>
       </li>
     </ul>
-    <div class="list-shortcut">
+    <div class="list-shortcut" @touchstart="onShortcutTouchStart" @touchmove.stop.prevent="onShortcutTouchMove">
       <ul>
-        <li v-for="item in shortcutList" class="item">{{item}}</li>
+        <li v-for="(item,index) in shortcutList" class="item" :data-index="index">{{item}}</li>
       </ul>
     </div>
   </scroll>
@@ -21,8 +21,14 @@
 
 <script>
   import Scroll from 'base/scroll/scroll'
+  import {getData} from 'common/js/dom'
+
+  const ANCHOR_HEIGHT = 18
 
   export default {
+    created() {
+      this.touch = {}
+    },
     props: {
       data: {
         type: Array,
@@ -38,6 +44,25 @@
     },
     components: {
       Scroll
+    },
+    methods: {
+      onShortcutTouchStart(e) {
+        let anchorIndex = getData(e.target, 'index')
+        let firstTouch = e.touches[0]
+        this.touch.y1 = firstTouch.pageY
+        this.touch.anchorIndex = anchorIndex
+        this._scrollTo(anchorIndex)
+      },
+      onShortcutTouchMove(e) {
+        let firstTouch = e.touches[0]
+        this.touch.y2 = firstTouch.pageY
+        let delta = this.touch.y1 - this.touch.y1 / ANCHOR_HEIGHT | 0
+        let anchorIndex = this.touch.anchorIndex + delta
+        this._scrollTo(anchorIndex)
+      },
+      _scrollTo(index) {
+        this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
+      }
     }
   }
 </script>
@@ -46,7 +71,7 @@
 <style scoped lang="stylus">
   @import "~common/stylus/variable"
 
-  .listview{
+  .listview {
     position: relative;
     width: 100%;
     height: 100%;
@@ -78,7 +103,7 @@
         }
       }
     }
-    .list-shortcut{
+    .list-shortcut {
       position: absolute;
       z-index: 30;
       right: 0;
@@ -88,24 +113,24 @@
       padding: 20px 0;
       border-radius: 10px;
       text-align: center;
-      background :$color-background-d;
+      background: $color-background-d;
       font-family: Helvetica;
-      .item{
+      .item {
         padding: 3px;
         line-height: 1;
         color: $color-text-l;
         font-size: $font-size-small;
-        &.current{
-          color:$color-theme;
+        &.current {
+          color: $color-theme;
         }
       }
     }
-    .list-fixed{
+    .list-fixed {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      .fixed-title{
+      .fixed-title {
         height: 30px;
         line-height: 30px;
         padding-left: 20px;
@@ -114,7 +139,7 @@
         background: $color-highlight-background;
       }
     }
-    .loading-container{
+    .loading-container {
       position: absolute;
       width: 100%;
       top: 50%;
