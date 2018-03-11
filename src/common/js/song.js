@@ -12,9 +12,6 @@ export default class Song {
 }
 
 export function createSong(musicData) {
-  var t = (new Date()).getUTCMilliseconds()
-  var _guid = Math.round(2147483647 * Math.random()) * t % 1e10
-
   return new Song({
     id: musicData.songid,
     mid: musicData.songmid,
@@ -23,7 +20,7 @@ export function createSong(musicData) {
     album: musicData.albumname,
     duration: musicData.interval,
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albumid}.jpg?max_age=2592000`,
-    url: `http://dl.stream.qqmusic.qq.com/C400${musicData.songmid}.m4a?guid=${_guid}`
+    url: `http://thirdparty.gtimg.com/C100${musicData.songmid}.m4a?fromtag=38`
   })
 }
 
