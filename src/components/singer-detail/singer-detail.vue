@@ -23,7 +23,7 @@
         return this.singer.name
       },
       bgImage() {
-//      return this.singer.avatar
+//        return this.singer.avatar
         return `https://y.gtimg.cn/music/photo_new/T001R300x300M000${this.singer.id}.jpg?max_age=2592000`
       },
       ...mapGetters([
