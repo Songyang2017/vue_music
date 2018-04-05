@@ -4,7 +4,7 @@ const matuations = {
   [types.SET_SINGER](state, singer) {
     state.singer = singer
   },
-  [types.SET_PlAYING_STATE](state, flag) {
+  [types.SET_PLAYING_STATE](state, flag) {
     state.playing = flag
   },
   [types.SET_FULL_SCREEN](state, flag) {

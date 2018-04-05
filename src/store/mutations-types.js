@@ -1,6 +1,6 @@
 export const SET_SINGER = 'SET_SINGER'
 
-export const SET_PlAYING_STATE = 'SET_PlAYING_STATE'
+export const SET_PLAYING_STATE = 'SET_PlAYING_STATE'
 
 export const SET_FULL_SCREEN = 'SET_FULL_SCREEN'
 
