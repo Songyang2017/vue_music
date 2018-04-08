@@ -29,8 +29,10 @@
         <div class="bottom">
           <div class="progress-wrapper">
             <span class="time time-l">{{this.format(currentTime)}}</span>
-            <div class="progress-bar-wrapper"></div>
-            <div class="time tiem-r">{{this.format(currentSong.duration)}}</div>
+            <div class="progress-bar-wrapper">
+              <progress-bar></progress-bar>
+            </div>
+            <div class="time time-r">{{this.format(currentSong.duration)}}</div>
           </div>
           <div class="operators">
             <div class="icon i-left">
@@ -77,6 +79,7 @@
   import {mapGetters, mapMutations} from 'vuex'
   import animations from 'create-keyframe-animation'
   import {prefixStyle} from 'common/js/dom'
+  import ProgressBar from 'base/progress-bar/progress-bar'
 
   const transform = prefixStyle('transform')
 
@@ -107,6 +110,9 @@
         'playing',
         'currentIndex'
       ])
+    },
+    components: {
+      ProgressBar
     },
     methods: {
       updateTime(e) {
