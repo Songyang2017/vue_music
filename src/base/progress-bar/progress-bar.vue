@@ -31,7 +31,10 @@
     },
     methods: {
       progressClick(e) {
-        this._offset(e.offsetX)
+        const rect = this.$refs.progressBar.getBoundingClientRect()
+        const offWidth = e.pageX - rect.left
+        //  点击progressBar时，e.offsetX获取不对
+        this._offset(offWidth)
         this._triggerPercent()
       },
       progressTouchStart(e) {
