@@ -5,7 +5,7 @@
           ref="suggest"
   >
     <ul class="suggest-list">
-      <li class="suggest-item" v-for="item in result">
+      <li @click="selectItem(item)" class="suggest-item" v-for="item in result">
         <div class="icon">
           <i :class="getIconCls(item)"></i>
         </div>
@@ -24,6 +24,8 @@
   import {createSong} from 'common/js/song'
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
+  import Singer from 'common/js/singer'
+  import {mapMutations, mapActions} from 'vuex'
 
   const TYPE_SINGER = 'singer'
   const perpage = 20
@@ -32,18 +34,18 @@
     props: {
       query: {
         type: String,
-        dafault: ''
+        default: ''
       },
       showSinger: {
         type: Boolean,
-        dafault: true,
-        hasMore: true
+        default: true
       }
     },
     data() {
       return {
         page: 1,
         result: [],
+        hasMore: true,
         pullup: true
       }
     },
@@ -52,6 +54,20 @@
       Loading
     },
     methods: {
+      selectItem(item) {
+        if (item.type === TYPE_SINGER) {
+          const singer = new Singer({
+            id: item.singermid,
+            name: item.singername
+          })
+          this.$router.push({
+            path: `/search/${singer.singerid}`
+          })
+          this.setSinger(singer)
+        } else {
+          this.insertSong(item)
+        }
+      },
       getDisplayName(item) {
         if (item.type === TYPE_SINGER) {
           return item.singername
@@ -61,7 +77,7 @@
       },
       getIconCls(item) {
         if (item.type === TYPE_SINGER) {
-          return 'icon-mini'
+          return 'icon-mine'
         } else {
           return 'icon-music'
         }
@@ -72,7 +88,7 @@
         this.$refs.suggest.scrollTo(0, 0)
         search(this.query, this.page, this.showSinger, perpage).then((res) => {
           if (res.code === ERR_OK) {
-//            console.log('res', res)
+            console.log('res', res)
             this.result = this._genResult(res.data)
             this._checkMore(res.data)
           }
@@ -115,7 +131,13 @@
           }
         })
         return ret
-      }
+      },
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+      }),
+      ...mapActions([
+        'insertSong'
+      ])
     },
     watch: {
       query() {
