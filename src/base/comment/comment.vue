@@ -4,12 +4,6 @@
       <i class="icon-back" @click="close"></i>
     </div>
     <p class="song-name">{{songName}}</p>
-    <!--<ul class="comment-content">-->
-      <!--<li v-for="item in hot_comment">-->
-        <!--<div class="top"><img :src="item.avatarurl">{{item.nick}}</div>-->
-        <!--<div class="bottom">{{item.rootcommentcontent}}</div>-->
-      <!--</li>-->
-    <!--</ul>-->
     <div v-if="allList.length">
       <scroll class="list" ref="list" :data="allList">
         <ul class="comment-content">
