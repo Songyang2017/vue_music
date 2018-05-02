@@ -68,7 +68,7 @@
             <div class="icon i-right" :class="disableCls">
               <i @click="next" class="icon-next"></i>
             </div>
-            <div class="icon i-right">
+            <div class="icon i-right" @click="_seekComment">
               <i class="icon-not-favorite"></i>
             </div>
           </div>
@@ -95,6 +95,7 @@
       </div>
     </transition>
     <audio ref="audio" @ended="end" @canplay="ready" @error="error" @timeupdate="updateTime" :src="currentSong.url"></audio>
+    <comment :topid="currentSong.id" :flag="flag" @close="flag = false"></comment>
   </div>
 </template>
 
@@ -108,6 +109,7 @@
   import {shuffle} from 'common/js/util'
   import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
+  import Comment from 'base/comment/comment'
 
   const transform = prefixStyle('transform')
   const transitionDuration = prefixStyle('transitionDuration')
@@ -121,7 +123,8 @@
         currentLyric: null,
         currentLineNum: 0,
         currentShow: 'cd',
-        playingLyric: ''
+        playingLyric: '',
+        flag: false
       }
     },
     created() {
@@ -159,9 +162,13 @@
     components: {
       ProgressBar,
       ProgressCircle,
-      Scroll
+      Scroll,
+      Comment
     },
     methods: {
+      _seekComment() {
+        this.flag = !this.flag
+      },
       middleTouchStart(e) {
         this.touch.initiated = true
         const touch = e.touches[0]
@@ -220,7 +227,7 @@
           if (this.playing) {
             this.currentLyric.play()
           }
-//          console.log(this.currentLyric)
+          console.log(this.currentLyric)
         }).catch(() => {
           this.currentLyric = null
           this.playinglyric = ''

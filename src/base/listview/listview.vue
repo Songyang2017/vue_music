@@ -1,39 +1,39 @@
 <template>
   <scroll class="listview"
-          :data="data"
-          ref="listview"
-          :listenScroll='listenScroll'
-          :probeType='probeType'
-          @scroll='scroll'
-  >
-    <ul>
-      <li v-for="group in data" class="list-group" ref="listGroup">
-        <h2 class="list-group-title">{{group.title}}</h2>
-        <ul>
-          <li class="list-group-item" @click="selectItem(item)" v-for="item in group.items">
-            <img :src="item.avatar" alt="" class="avatar">
-            <span class="name">{{item.name}}</span>
-          </li>
-        </ul>
-      </li>
-    </ul>
-    <div class="list-shortcut" @touchstart="onShortcutTouchStart" @touchmove.stop.prevent="onShortcutTouchMove">
+                   :data="data"
+                   ref="listview"
+                   :listenScroll='listenScroll'
+                   :probeType='probeType'
+                   @scroll='scroll'
+>
+  <ul>
+    <li v-for="group in data" class="list-group" ref="listGroup">
+      <h2 class="list-group-title">{{group.title}}</h2>
       <ul>
-        <li v-for="(item,index) in shortcutList"
-            class="item"
-            :data-index="index"
-            :class="{'current':currentIndex == index}"
-        >{{item}}
+        <li class="list-group-item" @click="selectItem(item)" v-for="item in group.items">
+          <img :src="item.avatar" alt="" class="avatar">
+          <span class="name">{{item.name}}</span>
         </li>
       </ul>
-    </div>
-    <div class="list-fixed" v-show="fixedTitle" ref="fixed">
-      <h1 class="fixed-title">{{fixedTitle}}</h1>
-    </div>
-    <div v-show="!data.length" class="loading-container">
-      <loading></loading>
-    </div>
-  </scroll>
+    </li>
+  </ul>
+  <div class="list-shortcut" @touchstart="onShortcutTouchStart" @touchmove.stop.prevent="onShortcutTouchMove">
+    <ul>
+      <li v-for="(item,index) in shortcutList"
+          class="item"
+          :data-index="index"
+          :class="{'current':currentIndex == index}"
+      >{{item}}
+      </li>
+    </ul>
+  </div>
+  <div class="list-fixed" v-show="fixedTitle" ref="fixed">
+    <h1 class="fixed-title">{{fixedTitle}}</h1>
+  </div>
+  <div v-show="!data.length" class="loading-container">
+    <loading></loading>
+  </div>
+</scroll>
 </template>
 
 <script>

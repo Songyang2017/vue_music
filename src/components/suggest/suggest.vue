@@ -142,6 +142,7 @@
     watch: {
       query() {
         this.search()
+        console.log('result', this.result)
       }
     }
   }

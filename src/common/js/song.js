@@ -1,6 +1,7 @@
 import {getLyric} from 'api/song'
 import {ERR_OK} from 'api/config'
 import {Base64} from 'js-base64'
+// import {getCommentList} from 'api/comment'
 
 export default class Song {
   constructor({id, mid, singer, name, album, duration, image, url}) {
