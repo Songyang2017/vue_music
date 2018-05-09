@@ -4,17 +4,15 @@
       <i class="icon-back" @click="close"></i>
     </div>
     <p class="song-name">{{songName}}</p>
-    <div v-if="allList.length">
-      <scroll class="list" ref="list" :data="allList">
-        <ul class="comment-content">
-          <li v-for="item in allList">
-            <div class="top"><img :src="item.avatarurl">{{item.nick}}</div>
-            <div class="bottom">{{item.rootcommentcontent}}</div>
-          </li>
-        </ul>
-      </scroll>
+    <scroll class="list" v-if="allList.length" ref="list" :data="allList">
+      <ul class="comment-content">
+        <li v-for="item in allList">
+          <div class="top"><img :src="item.avatarurl">{{item.nick}}</div>
+          <div class="bottom">{{item.rootcommentcontent}}</div>
+        </li>
+      </ul>
+    </scroll>
     </div>
-  </div>
 </template>
 
 <script>
@@ -47,7 +45,6 @@
       }
     },
     mounted() {
-
     },
     methods: {
       close() {
@@ -58,10 +55,12 @@
       Scroll
     },
     watch: {
-      topid(val) {
-        if (val) {
-          console.log('topid', val)
-          getCommentList(val, 25).then((res) => {
+      topid(newTopid, oldTopid) {
+        if (newTopid) {
+          let commentsList = getCommentList(newTopid, 25)
+          console.log('topid', newTopid, commentsList)
+          commentsList.then((res) => {
+            console.log('gg', this.allList)
             this.commentList.length = 0
             this.hot_comment.length = 0
             this.allList.length = 0
@@ -72,12 +71,9 @@
                 this.allList.push(v)
               })
               res.comment.commentlist.forEach((v, i, a) => {
-//                v.date = new Date(v.time).toLocaleString()
                 this.allList.push(v)
               })
               this.songName = res.topic_name
-//              this.allList = this.hot_comment.concat(this.songName)
-              console.log('gg', this.allList)
             }
           })
         }
