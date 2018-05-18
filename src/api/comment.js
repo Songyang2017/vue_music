@@ -1,6 +1,11 @@
 import jsonp from 'common/js/jsonp'
-import {commonParams, options} from './config'
+import {commonParams} from './config'
 // import axios from 'axios'
+
+const options = {
+  param: 'jsonpCallback',
+  name: '__jp4'
+}
 
 export function getCommentList(topid, pagesize) {
   const url = 'https://c.y.qq.com/base/fcgi-bin/fcg_global_comment_h5.fcg'
@@ -16,7 +21,7 @@ export function getCommentList(topid, pagesize) {
     pagenum: 0,
     pagesize: pagesize,
     lasthotcommentid: '',
-    callback: '__jp2',
+    callback: '__jp4',
     format: 'jsonp',
     ct: '24',
     cv: '101010',

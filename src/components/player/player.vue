@@ -94,6 +94,7 @@
         </div>
       </div>
     </transition>
+    <!--<audio ref="audio" @ended="end" @canplay="ready" @error="error" @timeupdate="updateTime" :src="vkeyUrl"></audio>-->
     <audio ref="audio" @ended="end" @canplay="ready" @error="error" @timeupdate="updateTime" :src="currentSong.url"></audio>
     <comment :topid="currentSong.id" :flag="flag" @close="flag = false"></comment>
   </div>
@@ -110,6 +111,8 @@
   import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
   import Comment from 'base/comment/comment'
+  import {getVkey} from 'api/vkey'
+  import {ERR_OK} from 'api/config'
 
   const transform = prefixStyle('transform')
   const transitionDuration = prefixStyle('transitionDuration')
@@ -124,7 +127,8 @@
         currentLineNum: 0,
         currentShow: 'cd',
         playingLyric: '',
-        flag: false
+        flag: false,
+        vkeyUrl: ''
       }
     },
     created() {
@@ -166,6 +170,20 @@
       Comment
     },
     methods: {
+      _getVkey() {
+        if (this.vkeyUrl) {
+          this.vkeyUrl = ''
+        }
+//        console.log('playerMid', this.currentSong.mid, getVkey(newSong.mid))
+        getVkey(this.currentSong.mid).then((res) => {
+          if (res.code === ERR_OK) {
+            var vkey = res.data.items[0].vkey
+            var filename = res.data.items[0].filename
+            this.vkeyUrl = `http://dl.stream.qqmusic.qq.com/${filename}?vkey=${vkey}&guid=7748797702&uin=1546302993&fromtag=66`
+//            console.log('player', path)
+          }
+        })
+      },
       _seekComment() {
         this.flag = !this.flag
       },
@@ -427,6 +445,7 @@
     },
     watch: {
       currentSong(newSong, oldSong) {
+        this._getVkey()
         if (newSong.id === oldSong.id) {
           return
         }

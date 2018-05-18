@@ -4,23 +4,21 @@
       <i class="icon-back" @click="close"></i>
     </div>
     <p class="song-name">{{songName}}</p>
-    <div v-if="allList.length">
-      <scroll class="list" ref="list" :data="allList">
-        <ul class="comment-content">
-          <li v-for="item in allList">
-            <div class="top"><img :src="item.avatarurl">{{item.nick}}</div>
-            <div class="bottom">{{item.rootcommentcontent}}</div>
-          </li>
-        </ul>
-      </scroll>
-    </div>
+    <scroll class="list" v-if="allList.length" ref="list" :data="allList">
+      <ul class="comment-content">
+        <li v-for="item in allList">
+          <div class="top"><img :src="item.avatarurl">{{item.nick}}<span class="likes">赞&nbsp;{{item.praisenum}}</span></div>
+          <div class="bottom" v-html="item.rootcommentcontent"></div>
+        </li>
+      </ul>
+    </scroll>
   </div>
 </template>
 
 <script>
   import {getCommentList} from 'api/comment'
-  import {ERR_OK} from 'api/config'
   import Scroll from 'base/scroll/scroll'
+  import {ERR_OK} from 'api/config'
 
   export default {
     props: {
@@ -47,40 +45,37 @@
       }
     },
     mounted() {
-
     },
     methods: {
       close() {
         this.$emit('close', this.flag)
+      },
+      _getCommentList() {
+        getCommentList(this.topid, 25).then((res) => {
+          this.commentList.length = 0
+          this.hot_comment.length = 0
+          this.allList.length = 0
+          if (res.code === ERR_OK) {
+            console.log('33', res)
+            this.commentList = res.comment.commentlist
+            this.hot_comment = res.hot_comment.commentlist
+            res.hot_comment.commentlist.forEach((v, i, a) => {
+              this.allList.push(v)
+            })
+            res.comment.commentlist.forEach((v, i, a) => {
+              this.allList.push(v)
+            })
+            this.songName = res.topic_name
+          }
+        })
       }
     },
     components: {
       Scroll
     },
     watch: {
-      topid(val) {
-        if (val) {
-          console.log('topid', val)
-          getCommentList(val, 25).then((res) => {
-            this.commentList.length = 0
-            this.hot_comment.length = 0
-            this.allList.length = 0
-            if (res.code === ERR_OK) {
-              this.commentList = res.comment.commentlist
-              this.hot_comment = res.hot_comment.commentlist
-              res.hot_comment.commentlist.forEach((v, i, a) => {
-                this.allList.push(v)
-              })
-              res.comment.commentlist.forEach((v, i, a) => {
-//                v.date = new Date(v.time).toLocaleString()
-                this.allList.push(v)
-              })
-              this.songName = res.topic_name
-//              this.allList = this.hot_comment.concat(this.songName)
-              console.log('gg', this.allList)
-            }
-          })
-        }
+      topid() {
+        this._getCommentList()
       }
     }
   }
@@ -89,7 +84,6 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
   @import '~common/stylus/variable'
-
   .comment-contain{
     background-color: $color-background
     display: none
@@ -137,6 +131,10 @@
             }
             font-size: $font-size-medium
             color: $color-text-l
+            .likes{
+              float: right
+              line-height: 30px
+            }
           }
           .bottom {
             font-size: $font-size-medium

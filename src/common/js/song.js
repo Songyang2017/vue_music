@@ -1,7 +1,7 @@
 import {getLyric} from 'api/song'
 import {ERR_OK} from 'api/config'
 import {Base64} from 'js-base64'
-// import {getCommentList} from 'api/comment'
+// import {getVkey} from 'api/vkey'
 
 export default class Song {
   constructor({id, mid, singer, name, album, duration, image, url}) {
@@ -34,6 +34,16 @@ export default class Song {
 }
 
 export function createSong(musicData) {
+  // var path = ''
+  // getVkey(musicData.songmid).then((res) => {
+  //   if (res.code === ERR_OK) {
+  //     var vkey = res.data.items[0].vkey
+  //     var filename = res.data.items[0].filename
+  //     path = `http://dl.stream.qqmusic.qq.com/${filename}?vkey=${vkey}&guid=7748797702&uin=1546302993&fromtag=66`
+  //     console.log('player', path)
+  //   }
+  // })
+
   return new Song({
     id: musicData.songid,
     mid: musicData.songmid,
@@ -44,7 +54,7 @@ export function createSong(musicData) {
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid
       }.jpg?max_age=2592000`,
     // url: `http://thirdparty.gtimg.com/C100${musicData.songmid}.m4a?fromtag=38`
-    url: `http://dl.stream.qqmusic.qq.com/C400${musicData.songmid}/${musicData.songid}.m4a?guid=9351871712&fromtag=66`
+    url: `http://dl.stream.qqmusic.qq.com/C400${musicData.songmid}/${musicData.songid}.m4a?guid=9351871712&fromtag=38`
   })
 }
 

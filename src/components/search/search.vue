@@ -51,7 +51,7 @@
         getHotKey().then((res) => {
           if (res.code === ERR_OK) {
 //            console.log(res.data.hotkey)
-            this.hotKey = res.data.hotkey.slice(0, 10)
+            this.hotKey = res.data.hotkey.slice(5, 15)
           }
         })
       }
