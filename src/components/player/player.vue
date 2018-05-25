@@ -94,8 +94,8 @@
         </div>
       </div>
     </transition>
-    <!--<audio ref="audio" @ended="end" @canplay="ready" @error="error" @timeupdate="updateTime" :src="vkeyUrl"></audio>-->
-    <audio ref="audio" @ended="end" @canplay="ready" @error="error" @timeupdate="updateTime" :src="currentSong.url"></audio>
+    <audio ref="audio" @ended="end" @canplay="ready" @error="error" @timeupdate="updateTime" :src="vkeyUrl"></audio>
+    <!--<audio ref="audio" @ended="end" @canplay="ready" @error="error" @timeupdate="updateTime" :src="currentSong.url"></audio>-->
     <comment :topid="currentSong.id" :flag="flag" @close="flag = false"></comment>
   </div>
 </template>

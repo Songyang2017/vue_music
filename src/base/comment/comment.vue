@@ -7,7 +7,7 @@
     <scroll class="list" v-if="allList.length" ref="list" :data="allList">
       <ul class="comment-content">
         <li v-for="item in allList">
-          <div class="top"><img :src="item.avatarurl">{{item.nick}}</div>
+          <div class="top"><img :src="item.avatarurl">{{item.nick}}<span style="line-height:30px;float: right">赞&nbsp;{{item.praisenum}}</span></div>
           <div class="bottom">{{item.rootcommentcontent}}</div>
         </li>
       </ul>
@@ -49,6 +49,29 @@
     methods: {
       close() {
         this.$emit('close', this.flag)
+      },
+      _getCommentList() {
+        getCommentList(this.topid, 25).then((res) => {
+          this.commentList.length = 0
+          this.hot_comment.length = 0
+          this.allList.length = 0
+          if (res.code === ERR_OK) {
+            this.hot_comment = res.hot_comment.commentlist
+            this.commentList = res.comment.commentlist
+            if (this.hot_comment) {
+              this.hot_comment.forEach((v, i, a) => {
+                this.allList.push(v)
+              })
+            }
+            if (this.commentList) {
+              this.commentList.forEach((v, i, a) => {
+                this.allList.push(v)
+              })
+            }
+            this.songName = res.topic_name
+            console.log('gg', this.allList)
+          }
+        })
       }
     },
     components: {
@@ -56,27 +79,8 @@
     },
     watch: {
       topid(newTopid, oldTopid) {
-        if (newTopid) {
-          let commentsList = getCommentList(newTopid, 25)
-          console.log('topid', newTopid, commentsList)
-          commentsList.then((res) => {
-            console.log('gg', this.allList)
-            this.commentList.length = 0
-            this.hot_comment.length = 0
-            this.allList.length = 0
-            if (res.code === ERR_OK) {
-              this.commentList = res.comment.commentlist
-              this.hot_comment = res.hot_comment.commentlist
-              res.hot_comment.commentlist.forEach((v, i, a) => {
-                this.allList.push(v)
-              })
-              res.comment.commentlist.forEach((v, i, a) => {
-                this.allList.push(v)
-              })
-              this.songName = res.topic_name
-            }
-          })
-        }
+        console.log('topid', newTopid)
+        this._getCommentList()
       }
     }
   }
