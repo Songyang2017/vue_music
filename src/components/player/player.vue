@@ -16,6 +16,9 @@
           </div>
           <h1 class="title" v-html="currentSong.name"></h1>
           <h2 class="subtitle" v-html="currentSong.singer"></h2>
+          <div class="down-load">
+            <a :href="vkeyUrl" :download="vkeyUrl"></a>
+          </div>
         </div>
         <div class="middle"
           @touchstart.prevent="middleTouchStart"
@@ -68,7 +71,7 @@
             <div class="icon i-right" :class="disableCls">
               <i @click="next" class="icon-next"></i>
             </div>
-            <div class="icon i-right" @click="_seekComment">
+            <div class="icon i-right" @click="_seekComment(currentSong)">
               <i class="icon-not-favorite"></i>
             </div>
           </div>
@@ -96,7 +99,8 @@
     </transition>
     <audio ref="audio" @ended="end" @canplay="ready" @error="error" @timeupdate="updateTime" :src="vkeyUrl"></audio>
     <!--<audio ref="audio" @ended="end" @canplay="ready" @error="error" @timeupdate="updateTime" :src="currentSong.url"></audio>-->
-    <comment :topid="currentSong.id" :flag="flag" @close="flag = false"></comment>
+    <!--<comment :topid="currentSong.id" :flag="flag" @close="flag = false"></comment>-->
+    <router-view></router-view>
   </div>
 </template>
 
@@ -110,7 +114,6 @@
   import {shuffle} from 'common/js/util'
   import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
-  import Comment from 'base/comment/comment'
   import {getVkey} from 'api/vkey'
   import {ERR_OK} from 'api/config'
 
@@ -166,8 +169,7 @@
     components: {
       ProgressBar,
       ProgressCircle,
-      Scroll,
-      Comment
+      Scroll
     },
     methods: {
       _getVkey() {
@@ -184,8 +186,11 @@
           }
         })
       },
-      _seekComment() {
-        this.flag = !this.flag
+      _seekComment(song) {
+        this.$router.push({
+          name: 'comments',
+          params: {topid: song.id}
+        })
       },
       middleTouchStart(e) {
         this.touch.initiated = true
@@ -505,6 +510,22 @@
             font-size: $font-size-large-x;
             color: $color-theme;
             transform: rotate(-90deg);
+          }
+        }
+        .down-load{
+          position: absolute;
+          top: 0;
+          right: 6px;
+          z-index: 50;
+          background-image: url('data:image/png;base64,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');
+          background-size: cover;
+          margin: 9px;
+          width: 24px;
+          height: 24px;
+          a{
+            width: 100%;
+            height: 100%;
+            display: block;
           }
         }
         .title {

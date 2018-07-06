@@ -1,10 +1,10 @@
 <template>
-  <div class="comment-contain" :class="display">
+  <div class="comment-contain">
     <div class="back">
-      <i class="icon-back" @click="close"></i>
+      <i class="icon-back" @click="back"></i>
     </div>
     <p class="song-name">{{songName}}</p>
-    <scroll class="list" v-if="allList.length" ref="list" :data="allList">
+    <scroll class="list" ref="list" :data="allList">
       <ul class="comment-content">
         <li v-for="item in allList">
           <div class="top"><img :src="item.avatarurl">{{item.nick}}<span style="line-height:30px;float: right">赞&nbsp;{{item.praisenum}}</span></div>
@@ -12,30 +12,19 @@
         </li>
       </ul>
     </scroll>
+    <div class="loading-container" v-if="!allList.length">
+      <loading></loading>
     </div>
+  </div>
 </template>
 
 <script>
   import {getCommentList} from 'api/comment'
   import {ERR_OK} from 'api/config'
   import Scroll from 'base/scroll/scroll'
+  import Loading from 'base/loading/loading'
 
   export default {
-    props: {
-      topid: {
-        type: Number,
-        default: 0
-      },
-      flag: {
-        type: Boolean,
-        default: false
-      }
-    },
-    computed: {
-      display() {
-        return this.flag ? 'show' : ''
-      }
-    },
     data() {
       return {
         songName: '',
@@ -44,14 +33,21 @@
         allList: []
       }
     },
+    computed: {
+    },
+    created() {
+      this._getCommentList()
+    },
     mounted() {
+      console.log('par', this.$route.params)
+      console.log('name', this.songName)
     },
     methods: {
-      close() {
-        this.$emit('close', this.flag)
+      back() {
+        this.$router.back()
       },
       _getCommentList() {
-        getCommentList(this.topid, 25).then((res) => {
+        getCommentList(this.$route.params.topid, 25).then((res) => {
           this.commentList.length = 0
           this.hot_comment.length = 0
           this.allList.length = 0
@@ -75,13 +71,14 @@
       }
     },
     components: {
-      Scroll
+      Scroll,
+      Loading
     },
     watch: {
-      topid(newTopid, oldTopid) {
-        console.log('topid', newTopid)
-        this._getCommentList()
-      }
+//      topid(newTopid, oldTopid) {
+//        console.log('topid', newTopid)
+//        this._getCommentList()
+//      }
     }
   }
 </script>
@@ -92,8 +89,8 @@
 
   .comment-contain{
     background-color: $color-background
-    display: none
-    position: fixed
+    /*display: none*/
+    position: absolute
     top: 0
     left: 0
     width: 100%
@@ -133,7 +130,7 @@
               width: 30px
               height: 30px
               vertical-align: middle
-              padding-right: 5px
+              margin-right: 5px
             }
             font-size: $font-size-medium
             color: $color-text-l
@@ -150,5 +147,11 @@
   }
   .show{
     display: block
+  }
+  .loading-container {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
   }
 </style>
