@@ -1,21 +1,30 @@
 <template>
-  <div class="comment-contain">
-    <div class="back">
-      <i class="icon-back" @click="back"></i>
+  <transition name="slide">
+    <div class="comment-contain">
+      <div class="back">
+        <i class="icon-back" @click="back"></i>
+      </div>
+      <p class="song-name">{{songName}}</p>
+      <scroll class="list" ref="list" :data="allList">
+        <ul class="comment-content">
+          <li v-for="item in allList">
+            <div class="top">
+              <img v-lazy="item.avatarurl">
+              <div class="nick">
+                <p>{{item.nick}}</p>
+                <p>{{item.date}}</p>
+              </div>
+              <span style="line-height:30px;float: right"><i class="iconfont">&#xe603;</i>&nbsp;{{item.praisenum}}</span>
+            </div>
+            <div class="bottom">{{item.rootcommentcontent}}</div>
+          </li>
+        </ul>
+      </scroll>
+      <div class="loading-container" v-if="display">
+        <loading></loading>
+      </div>
     </div>
-    <p class="song-name">{{songName}}</p>
-    <scroll class="list" ref="list" :data="allList">
-      <ul class="comment-content">
-        <li v-for="item in allList">
-          <div class="top"><img :src="item.avatarurl">{{item.nick}}<span style="line-height:30px;float: right">赞&nbsp;{{item.praisenum}}</span></div>
-          <div class="bottom">{{item.rootcommentcontent}}</div>
-        </li>
-      </ul>
-    </scroll>
-    <div class="loading-container" v-if="!allList.length">
-      <loading></loading>
-    </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -33,39 +42,49 @@
         allList: []
       }
     },
+    props: { },
     computed: {
+      topid() {
+        return this.$route.params.topid
+      },
+      display() {
+        return !this.allList.length
+      }
     },
     created() {
-      this._getCommentList()
+      this._getCommentList(this.topid)
     },
     mounted() {
-      console.log('par', this.$route.params)
-      console.log('name', this.songName)
+
     },
     methods: {
       back() {
         this.$router.back()
+        this.allList.length = 0
+        console.log('长度', this.allList.length)
       },
-      _getCommentList() {
-        getCommentList(this.$route.params.topid, 25).then((res) => {
+      _getCommentList(id) {
+        this.allList.length = 0
+        getCommentList(id, 25).then((res) => {
           this.commentList.length = 0
           this.hot_comment.length = 0
-          this.allList.length = 0
           if (res.code === ERR_OK) {
             this.hot_comment = res.hot_comment.commentlist
             this.commentList = res.comment.commentlist
             if (this.hot_comment) {
               this.hot_comment.forEach((v, i, a) => {
+                v.date = new Date(Number(v.time) * 1000).toLocaleString()
                 this.allList.push(v)
               })
             }
             if (this.commentList) {
               this.commentList.forEach((v, i, a) => {
+                v.date = new Date(Number(v.time) * 1000).toLocaleString()
                 this.allList.push(v)
               })
             }
             this.songName = res.topic_name
-            console.log('gg', this.allList)
+//            console.log('gg', this.allList)
           }
         })
       }
@@ -75,10 +94,11 @@
       Loading
     },
     watch: {
-//      topid(newTopid, oldTopid) {
-//        console.log('topid', newTopid)
-//        this._getCommentList()
-//      }
+      topid(val) {
+        if (typeof val !== 'undefined') {
+          this._getCommentList(val)
+        }
+      }
     }
   }
 </script>
@@ -119,6 +139,7 @@
       position: absolute
       top: 42px
       bottom: 0
+      width: 100%
       overflow: hidden
       .comment-content {
         padding: 10px
@@ -129,11 +150,23 @@
               border-radius: 50%
               width: 30px
               height: 30px
-              vertical-align: middle
+              vertical-align: sub
               margin-right: 5px
             }
-            font-size: $font-size-medium
+            .nick {
+              display: inline-block;
+              p {
+                &:nth-child(1){
+                  margin-bottom: 5px
+                }
+                &:nth-child(2){
+                  color: $color-theme-d
+                }
+              }
+            }
+            font-size: $font-size-small-s
             color: $color-text-l
+            margin-bottom: 5px
           }
           .bottom {
             font-size: $font-size-medium
@@ -153,5 +186,13 @@
     width: 100%;
     top: 50%;
     transform: translateY(-50%);
+  }
+
+  .slide-enter-active, .slide-leave-active {
+    transition: all 0.3s
+  }
+
+  .slide-enter, .slide-leave-to {
+    transform: translate3d(100%, 0, 0)
   }
 </style>

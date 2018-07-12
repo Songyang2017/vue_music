@@ -100,7 +100,6 @@
     <audio ref="audio" @ended="end" @canplay="ready" @error="error" @timeupdate="updateTime" :src="vkeyUrl"></audio>
     <!--<audio ref="audio" @ended="end" @canplay="ready" @error="error" @timeupdate="updateTime" :src="currentSong.url"></audio>-->
     <!--<comment :topid="currentSong.id" :flag="flag" @close="flag = false"></comment>-->
-    <router-view></router-view>
   </div>
 </template>
 
@@ -191,6 +190,7 @@
           name: 'comments',
           params: {topid: song.id}
         })
+        console.log('评论id', song.id)
       },
       middleTouchStart(e) {
         this.touch.initiated = true

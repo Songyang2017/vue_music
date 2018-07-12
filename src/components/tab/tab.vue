@@ -12,6 +12,9 @@
       <router-link tag="div" class="tab-item" to="/search">
         <span class="tab-link">搜索</span>
       </router-link>
+      <!--<router-link tag="div" class="tab-item" to="/about-author">-->
+        <!--<span class="tab-link">作者</span>-->
+      <!--</router-link>-->
     </div>
 </template>
 

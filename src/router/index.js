@@ -8,6 +8,7 @@ import SingerDetail from 'components/singer-detail/singer-detail'
 import Disc from 'components/disc/disc'
 import TopList from 'components/top-list/top-list'
 import Comment from 'components/comment/comment'
+import AboutAuthor from 'components/about-author/about-author'
 
 Vue.use(Router)
 
@@ -62,6 +63,10 @@ export default new Router({
       component: Comment,
       name: 'comments',
       props: true
+    },
+    {
+      path: '/about-author',
+      component: AboutAuthor
     }
   ]
 })
