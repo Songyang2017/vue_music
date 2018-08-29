@@ -17,13 +17,13 @@
           <h1 class="title" v-html="currentSong.name"></h1>
           <h2 class="subtitle" v-html="currentSong.singer"></h2>
           <div class="down-load">
-            <a :href="vkeyUrl" :download="vkeyUrl"></a>
+            <a :href="vkeyUrl" ref="downIcon" :download="fileName"></a>
           </div>
         </div>
         <div class="middle"
-          @touchstart.prevent="middleTouchStart"
-          @touchmove.prevent="middleTouchMove"
-          @touchend="middleTouchEnd"
+             @touchstart.prevent="middleTouchStart"
+             @touchmove.prevent="middleTouchMove"
+             @touchend="middleTouchEnd"
         >
           <div class="middle-l" ref="middleL">
             <div class="cd-wrapper" ref="cdWrapper">
@@ -54,7 +54,7 @@
             <span class="time time-l">{{this.format(currentTime)}}</span>
             <div class="progress-bar-wrapper">
               <progress-bar :percent="percent"
-              @percentChange="onProgressBarChange"></progress-bar>
+                            @percentChange="onProgressBarChange"></progress-bar>
             </div>
             <div class="time time-r">{{this.format(currentSong.duration)}}</div>
           </div>
@@ -154,6 +154,9 @@
       },
       percent() {
         return this.currentTime / this.currentSong.duration
+      },
+      fileName() {
+        return this.currentSong.name + '.m4a'
       },
       ...mapGetters([
         'fullScreen',
@@ -512,7 +515,7 @@
             transform: rotate(-90deg);
           }
         }
-        .down-load{
+        .down-load {
           position: absolute;
           top: 0;
           right: 6px;
@@ -522,7 +525,7 @@
           margin: 9px;
           width: 24px;
           height: 24px;
-          a{
+          a {
             width: 100%;
             height: 100%;
             display: block;
