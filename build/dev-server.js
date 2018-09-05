@@ -36,9 +36,9 @@ apiRoutes.get('/getDiscList', function (req, res) {
     params: req.query
   }).then((response) => {
     res.json(response.data)
-}).catch((e) => {
+  }).catch((e) => {
     console.log(e)
-})
+  })
 })
 
 apiRoutes.get('/lyric', function (req, res) {
@@ -51,16 +51,37 @@ apiRoutes.get('/lyric', function (req, res) {
     params: req.query
   }).then((response) => {
     var ret = response.data
-    if (typeof ret === 'string'){
-    var reg = /^\w+\(({[^()]+})\)$/
-    var matches = ret.match(reg)
-    if(matches){
-      ret = JSON.parse(matches[1])
+    if (typeof ret === 'string') {
+      var reg = /^\w+\(({[^()]+})\)$/
+      var matches = ret.match(reg)
+      if (matches) {
+        ret = JSON.parse(matches[1])
+      }
     }
-  }
     res.json(ret)
   }).catch((e) => {
     console.log(e)
+  })
+})
+
+apiRoutes.get('/search', function (req, res) {
+  var url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
+  axios.get(url, {
+    headers: {
+      referer: 'https://y.qq.com/m/index.html',
+      host: 'c.y.qq.com'
+    },
+    params: req.query
+  }).then((response) => {
+    var ret = response.data
+    if (typeof ret === 'string') {
+      var reg = /^\w+\(({.+})\)$/
+      var matches = ret.match(reg)
+      if (matches) {
+        ret = JSON.parse(matches[1])
+      }
+    }
+    res.json(ret)
   })
 })
 
@@ -79,13 +100,13 @@ apiRoutes.get('/getSongList', function (req, res) {
       var reg = /^\w+\(({.+})\)$/
       var matches = ret.match(reg)
       if (matches) {
-      ret = JSON.parse(matches[1])
+        ret = JSON.parse(matches[1])
+      }
     }
-  }
-  res.json(ret)
-}).catch((e)=> {
+    res.json(ret)
+  }).catch((e) => {
     console.log(e)
-})
+  })
 
 })
 
@@ -140,9 +161,9 @@ const uri = 'http://localhost:' + port
 var _resolve
 var _reject
 var readyPromise = new Promise((resolve, reject) => {
-  _resolve = resolve
-  _reject = reject
-}
+    _resolve = resolve
+    _reject = reject
+  }
 )
 
 var server
@@ -152,24 +173,24 @@ portfinder.basePort = port
 console.log('> Starting dev server...')
 devMiddleware.waitUntilValid(() => {
   portfinder.getPort((err, port) => {
-  if(err) {
-    _reject(err)
-  }
-  process.env.PORT = port
-var uri = 'http://localhost:' + port
-console.log('> Listening at ' + uri + '\n')
+    if (err) {
+      _reject(err)
+    }
+    process.env.PORT = port
+    var uri = 'http://localhost:' + port
+    console.log('> Listening at ' + uri + '\n')
 // when env is testing, don't need open it
-if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-  opn(uri)
-}
-server = app.listen(port)
-_resolve()
-})
+    if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
+      opn(uri)
+    }
+    server = app.listen(port)
+    _resolve()
+  })
 })
 
 module.exports = {
   ready: readyPromise,
   close: () => {
-  server.close()
-}
+    server.close()
+  }
 }
