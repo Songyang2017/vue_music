@@ -110,6 +110,27 @@ apiRoutes.get('/getSongList', function (req, res) {
 
 })
 
+apiRoutes.get('/api/search', function (req, res) {
+  var url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
+  axios.get(url, {
+    headers: {
+      referer: 'https://y.qq.com/m/index.html',
+      host: 'c.y.qq.com'
+    },
+    params: req.query
+  }).then((response) => {
+      var ret = response.data
+      if (typeof ret === 'string') {
+      var reg = /^\w+\(({.+})\)$/
+      var matches = ret.match(reg)
+      if (matches == null) {
+        ret = JSON.parse(matches[1])
+      }
+    }
+    res.json(ret)
+  })
+})
+
 app.use('/api', apiRoutes)
 
 const compiler = webpack(webpackConfig)

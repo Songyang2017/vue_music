@@ -1,3 +1,4 @@
+import axios from 'axios'
 import jsonp from 'common/js/jsonp'
 import {commonParams, options} from './config'
 
@@ -15,8 +16,8 @@ export function getHotKey() {
   return jsonp(url, data, options)
 }
 
-export function search(query, page, zhida, perpage) {
-  const url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
+export function search (query, page, zhida, perpage) {
+  const url = '/api/search'
 
   const data = Object.assign({}, commonParams, {
     w: query,
@@ -36,5 +37,9 @@ export function search(query, page, zhida, perpage) {
     needNewCode: 1
   })
 
-  return jsonp(url, data, options)
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res.data)
+  })
 }
