@@ -21,6 +21,11 @@
           query: ''
         }
       },
+      created() {
+        this.$watch('query', debounce(newQuery => {
+          this.$emit('query', newQuery)
+        }, 200))
+      },
       methods: {
         setQuery(query) {
           this.query = query
@@ -28,11 +33,6 @@
         clear() {
           this.query = ''
         }
-      },
-      created() {
-        this.$watch('query', debounce(newQuery => {
-          this.$emit('query', newQuery)
-        }, 200))
       }
     }
 </script>
