@@ -1,6 +1,8 @@
 <template>
   <scroll class="suggest" :data="result"
           :pullup="pullup"
+          beforeScroll
+          @beforeScroll="listenScroll"
           @scrollToEnd="searchMore"
           ref="suggest"
   >
@@ -86,6 +88,9 @@
         } else {
           return 'icon-music'
         }
+      },
+      listenScroll() {
+        this.$emit('listenScroll')
       },
       search() {
         this.page = 1
